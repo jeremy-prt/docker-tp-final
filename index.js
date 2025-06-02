@@ -1,13 +1,26 @@
 const express = require("express");
+const mysql = require("mysql2");
 const app = express();
-const PORT = 5088;
+const port = 5088;
 
-app.use("/public", express.static("."));
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
-app.get("/", (req, res) => {
-  res.send("Bonjour !");
+const connection = mysql.createConnection({
+  host: "host.docker.internal",
+  user: "root",
+  password: "example",
+  database: "testdb",
 });
 
-app.listen(PORT, () => {
-  console.log(`API run`);
+app.get("/", (req, res) => {
+  connection.query("SELECT name FROM users LIMIT 1", (err, results) => {
+    if (err) return res.send("Erreur MySQL");
+    const name = results[0]?.name || "Nom non trouvé";
+    res.render("pages/index", { name });
+  });
+});
+
+app.listen(port, () => {
+  console.log("API RUN");
 });
