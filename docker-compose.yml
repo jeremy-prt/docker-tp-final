@@ -6,6 +6,8 @@ services:
       - "5088:5088"
     depends_on:
       - mysql
+    volumes:
+      - ./public:/app/public
     environment:
       - DB_HOST=mysql
       - DB_USER=root
