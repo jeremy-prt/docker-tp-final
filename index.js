@@ -7,11 +7,24 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 
 const connection = mysql.createConnection({
-  host: "host.docker.internal",
+  host: "mysql",
   user: "root",
-  password: "example",
+  password: "root",
   database: "testdb",
 });
+
+// On crée la table et on va inserer les données si elle est vide
+connection.query(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50)
+  )
+`);
+
+connection.query(`
+      INSERT INTO users (name) VALUES 
+      ('Jeremy'), ('Remi'), ('JeRemiLeGoat')
+    `);
 
 app.get("/", (req, res) => {
   connection.query("SELECT name FROM users LIMIT 1", (err, results) => {
